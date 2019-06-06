@@ -64,7 +64,7 @@ class Wedo1 {
                 {
                     "opcode": "setDirection",
                     "blockType": "command",
-                    "text": "set [powered] power to [direction]",
+                    "text": "set [powered] direction to [direction]",
                     "arguments": {
                         "powered": {
                             "type": "ArgumentType.STRING",
@@ -164,7 +164,7 @@ class Wedo1 {
     }
 
     setDirection({powered, direction}){
-        
+
     }
 }
 Scratch.extensions.register(new Wedo1());
