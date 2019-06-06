@@ -6,6 +6,17 @@ class Wedo1 {
             "name": "WeDo 1.0",
             "blocks": [
                 {
+                    "opcode": "testSocket",
+                    "blockType": "command",
+                    "text": "send [text] message",
+                    "arguments": {
+                        "text":{
+                            "type": "string",
+                            "defaultValue": ""
+                        }
+                    }
+                },
+                {
                     "opcode": "turnOnTime",
                     "blockType": "command",
                     "text": "turn [powered] on for [num] secs",
@@ -165,6 +176,15 @@ class Wedo1 {
 
     setDirection({powered, direction}){
 
+    }
+
+    testSocket({text}){
+        const socket = new WebSocket('ws://localhost:8080/');
+
+        socket.addEventListener('open', function (event) {
+            socket.send(text + "\n");
+            socket.close()
+        });
     }
 }
 Scratch.extensions.register(new Wedo1());
