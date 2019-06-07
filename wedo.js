@@ -6,17 +6,6 @@ class Wedo1 {
             "name": "WeDo 1.0",
             "blocks": [
                 {
-                    "opcode": "testSocket",
-                    "blockType": "command",
-                    "text": "send [text] message",
-                    "arguments": {
-                        "text":{
-                            "type": "string",
-                            "defaultValue": ""
-                        }
-                    }
-                },
-                {
                     "opcode": "turnOnTime",
                     "blockType": "command",
                     "text": "turn [powered] on for [num] secs",
@@ -140,7 +129,7 @@ class Wedo1 {
             "menus": {
                 OP: ['<', '>'],
                 TILT: ['up', 'down', 'left', 'right', 'any'],
-                POWERED: ['motor', 'motor A', 'motor B', 'everything'],
+                POWERED: ['motor', 'motor A', 'motor B'],
                 DIRECTION: ['this way', 'that way', 'reverse']
             }
         }
@@ -163,11 +152,21 @@ class Wedo1 {
     }
 
     turnOn({powered}){
+        const socket = new WebSocket('ws://localhost:8080/');
 
+        socket.addEventListener('open', function (event) {
+            socket.send(JSON.stringify({type: "motor", motor: powered, power: 100}));
+            socket.close()
+        });
     }
 
     turnOff({powered}){
+        const socket = new WebSocket('ws://localhost:8080/');
 
+        socket.addEventListener('open', function (event) {
+            socket.send(JSON.stringify({type: "motor", motor: powered, power: 0}));
+            socket.close()
+        });
     }
 
     setPower({powered, num}){
@@ -176,15 +175,6 @@ class Wedo1 {
 
     setDirection({powered, direction}){
 
-    }
-
-    testSocket({text}){
-        const socket = new WebSocket('ws://localhost:8080/');
-
-        socket.addEventListener('open', function (event) {
-            socket.send(text + "\n");
-            socket.close()
-        });
     }
 }
 Scratch.extensions.register(new Wedo1());
