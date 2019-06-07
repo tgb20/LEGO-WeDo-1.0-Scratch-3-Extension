@@ -136,7 +136,24 @@ class Wedo1 {
     }
 
     getDistance({}) {
-        return 0;
+        const socket = new WebSocket('ws://localhost:8080/');
+
+        socket.addEventListener('open', function (event) {
+            socket.send(JSON.stringify({type: "sensor", sensor: "distance"}));
+        });
+
+        socket.addEventListener('message', function (event) {
+            var j = JSON.parse(event.data)
+            socket.close();
+            var fixedValue = Math.floor(j.value * 100 / 46)
+            return fixedValue
+        });
+
+        return 1337;
+    }
+
+    getTilt({tilt}){
+        return false;
     }
 
     whenDistance({op, num}){
@@ -148,14 +165,17 @@ class Wedo1 {
     }
 
     turnOnTime({powered, num}){
-
+        this.turnOn({powered})
+        setTimeout(() => {
+            this.turnOff({powered})
+        }, num * 1000)
     }
 
     turnOn({powered}){
         const socket = new WebSocket('ws://localhost:8080/');
 
         socket.addEventListener('open', function (event) {
-            socket.send(JSON.stringify({type: "motor", motor: powered, power: 100}));
+            socket.send(JSON.stringify({type: "motor", change: "status", motor: powered, status: "on"}));
             socket.close()
         });
     }
@@ -164,17 +184,27 @@ class Wedo1 {
         const socket = new WebSocket('ws://localhost:8080/');
 
         socket.addEventListener('open', function (event) {
-            socket.send(JSON.stringify({type: "motor", motor: powered, power: 0}));
+            socket.send(JSON.stringify({type: "motor", change: "status", motor: powered, status: "off"}));
             socket.close()
         });
     }
 
     setPower({powered, num}){
+        const socket = new WebSocket('ws://localhost:8080/');
 
+        socket.addEventListener('open', function (event) {
+            socket.send(JSON.stringify({type: "motor", change: "power", motor: powered, power: num}));
+            socket.close()
+        });
     }
 
     setDirection({powered, direction}){
+        const socket = new WebSocket('ws://localhost:8080/');
 
+        socket.addEventListener('open', function (event) {
+            socket.send(JSON.stringify({type: "motor", change: "direction", motor: powered, direction: direction}));
+            socket.close()
+        });
     }
 }
 Scratch.extensions.register(new Wedo1());
