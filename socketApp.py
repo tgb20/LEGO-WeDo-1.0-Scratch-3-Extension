@@ -14,7 +14,7 @@ motorBDirection = True
 
 def new_client(client, server):
     # New Client
-    a = 1 + 1
+    pass
 
 def new_message(client, server, message):
 
