@@ -139,25 +139,35 @@ class Wedo1 {
         }
     }
 
-    getDistance({}) {
-        const socket = new WebSocket('ws://localhost:8080/');
-
-        socket.addEventListener('open', function (event) {
-            socket.send(JSON.stringify({type: "sensor", sensor: "distance"}));
-        });
-
-        socket.addEventListener('message', function (event) {
-            var j = JSON.parse(event.data)
-            socket.close();
-            var fixedValue = Math.floor(j.value * 100 / 46)
-            return fixedValue
-        });
-
-        return 1337;
+    async getDistance({}) {
+        return await this.fetchDistance()
     }
 
-    getTilt({tilt}){
-        return false;
+    fetchDistance(){
+        return new Promise((resolve, reject) => {
+            const socket = new WebSocket('ws://localhost:8080/');
+
+            socket.addEventListener('open', function (event) {
+                socket.send(JSON.stringify({type: "sensor", sensor: "distance"}));
+            });
+
+            socket.addEventListener('message', function (event) {
+                var j = JSON.parse(event.data)
+                socket.close();
+                var fixedValue = Math.floor(j.value * 100 / 46)
+                resolve(fixedValue)
+            });
+        })
+    }
+
+    async getTilt({tilt}){
+        return await this.fetchTilt(tilt);
+    }
+
+    fetchTilt(tilt){
+        return new Promise((resolve, reject) => {
+            resolve(true)
+        })
     }
 
     whenDistance({op, num}){
